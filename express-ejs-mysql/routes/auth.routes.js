@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const authController = require('../controllers/auth.controller');
+
+router.get('/', (req, res) => {
+	if (req.session.user) {
+		return res.redirect('/products');
+	}
+	res.redirect('/login');
+});
 
 // Login page
 router.get('/login', authController.loginPage);

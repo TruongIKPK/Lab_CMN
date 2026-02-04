@@ -1,5 +1,4 @@
-const bcrypt = require('bcryptjs');
-const User = require('../models/user.model');
+const authService = require('../services/auth.service');
 
 exports.loginPage = (req, res) => {
     if (req.session.user) return res.redirect('/products');
@@ -9,46 +8,43 @@ exports.loginPage = (req, res) => {
 exports.login = async (req, res) => {
     const { username, password } = req.body;
     try {
-        const user = await User.getUser(username);
-        if (user) {
-            const match = await bcrypt.compare(password, user.password);
-            if (match) {
-                req.session.user = { id: user.id, username: user.username };
-                console.log('Login successful for user:', username);
-                return res.redirect('/products');
-            }
+        const user = await authService.login(username, password);
+        if (!user) {
+            console.log('Login failed for user:', username);
+            return res.render('login', { error: 'Sai thong tin dang nhap' });
         }
-        console.log('Login failed for user:', username);
-        res.render('login', { error: 'Invalid username or password' });
+        req.session.user = user;
+        console.log('Login successful for user:', username);
+        res.redirect('/products');
     } catch (err) {
         console.error('Login error:', err);
-        res.render('login', { error: 'Login error' });
+        res.render('login', { error: 'Khong the dang nhap luc nay' });
     }
 };
 
 exports.registerPage = (req, res) => {
-    res.render('register', { error: null });
+    res.render('register', {
+        error: null,
+        allowRoleSelection: req.session.user?.role === 'admin'
+    });
 };
 
 exports.register = async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { username, password, role } = req.body;
     try {
-        const user = await User.getUser(username);
-        if (user) {
-            console.log('Register failed: Username already exists:', username);
-            return res.render('register', { error: 'Username already exists' });
-        }
-        await User.createUser({
-            id: Date.now().toString(),
-            username,
-            password: hashedPassword
-        });
+        const selectedRole = req.session.user?.role === 'admin' ? (role || 'staff') : 'staff';
+        await authService.register({ username, password, role: selectedRole });
         console.log('Register successful for user:', username);
         res.redirect('/login');
     } catch (error) {
         console.error('Register error:', error);
-        res.render('register', { error: 'Register error' });
+        const message = error.code === 'USERNAME_EXISTS'
+            ? 'Ten dang nhap da ton tai'
+            : 'Khong the tao tai khoan luc nay';
+        res.render('register', {
+            error: message,
+            allowRoleSelection: req.session.user?.role === 'admin'
+        });
     }
 };
 

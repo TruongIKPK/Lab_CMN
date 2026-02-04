@@ -2,75 +2,200 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Product List</title>
+  <title>Product Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-8">
+<body class="bg-slate-100 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-8">
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <p class="text-sm uppercase tracking-wide text-slate-500">Inventory Control</p>
+        <h1 class="text-4xl font-bold text-slate-900">Product Dashboard</h1>
+      </div>
+      <div class="bg-white shadow rounded-xl px-6 py-4 flex items-center gap-4">
+        <div>
+          <p class="text-sm text-slate-500">Xin chao</p>
+          <p class="font-semibold text-slate-900"><%= (user && user.username) || 'User' %></p>
+          <p class="text-xs text-slate-500">Role: <span class="uppercase"><%= (user && user.role) || 'staff' %></span></p>
+        </div>
+        <div class="flex gap-3">
+          <a href="/logout" class="text-sm text-slate-500 hover:text-slate-800">Dang xuat</a>
+          <% if (isAdmin) { %>
+            <a href="/categories" class="text-sm text-blue-600 font-semibold">Quan ly danh muc -></a>
+          <% } %>
+        </div>
+      </div>
+    </header>
 
-  <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">Product Management</h1>
+    <% if (error) { %>
+      <div class="bg-red-100 border border-red-300 text-red-700 px-6 py-3 rounded-lg">
+        <%= error %>
+      </div>
+    <% } %>
 
-    <!-- Add Product Form -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 class="text-xl font-semibold mb-4">Add Product</h2>
-      <form action="/products/add" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-         <input name="name" placeholder="Name" required
-           class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-         <input name="price" type="number" step="0.01" placeholder="Price" required
-           class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-         <input name="quantity" type="number" placeholder="Quantity" required
-           class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-         <input name="image" type="file" accept="image/*" class="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-         <button class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
-           Add Product
-         </button>
+    <!-- Filters -->
+    <section class="bg-white shadow rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-slate-900">Bo loc nang cao</h2>
+        <a href="/products" class="text-sm text-slate-500 hover:text-slate-800">Dat lai bo loc</a>
+      </div>
+      <form class="grid grid-cols-1 md:grid-cols-5 gap-4" method="get">
+        <div>
+          <label class="text-sm text-slate-500">Danh muc</label>
+          <select name="categoryId" class="mt-1 w-full border rounded-lg px-3 py-2">
+            <option value="">Tat ca</option>
+            <% (categories || []).forEach((category) => { %>
+              <option value="<%= category.categoryId %>" <%= filters && filters.categoryId === category.categoryId ? 'selected' : '' %>>
+                <%= category.name %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm text-slate-500">Ten san pham</label>
+          <input name="search" value="<%= (filters && filters.searchTerm) || '' %>" placeholder="Tu khoa..." class="mt-1 w-full border rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="text-sm text-slate-500">Gia toi thieu</label>
+          <input name="minPrice" type="number" step="0.01" value="<%= (filters && filters.minPrice) !== undefined ? filters.minPrice : '' %>" class="mt-1 w-full border rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="text-sm text-slate-500">Gia toi da</label>
+          <input name="maxPrice" type="number" step="0.01" value="<%= (filters && filters.maxPrice) !== undefined ? filters.maxPrice : '' %>" class="mt-1 w-full border rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="text-sm text-slate-500">Kich thuoc trang</label>
+          <select name="pageSize" class="mt-1 w-full border rounded-lg px-3 py-2">
+            <% [5,10,15,20].forEach(size => { %>
+              <option value="<%= size %>" <%= (filters && filters.pageSize === size) ? 'selected' : '' %>><%= size %> sp</option>
+            <% }) %>
+          </select>
+        </div>
+        <button class="md:col-span-5 bg-blue-600 text-white rounded-xl py-3 font-semibold hover:bg-blue-700 transition">
+          Ap dung bo loc
+        </button>
       </form>
-    </div>
+    </section>
 
-    <!-- Products Table -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-      <h2 class="text-xl font-semibold p-6 border-b">Products</h2>
-      <table class="w-full">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <% products.forEach(p => { %>
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4"><%= p.id %></td>
-              <td class="px-6 py-4"><%= p.name %></td>
-              <td class="px-6 py-4">$<%= p.price %></td>
-              <td class="px-6 py-4"><%= p.quantity %></td>
-              <td class="px-6 py-4">
-                <% if (p.s3_truong) { %>
-                  <img src="<%= p.s3_truong %>" alt="Image" class="h-16 w-16 object-cover rounded" />
-                <% } else { %>
-                  <span class="text-gray-400">No image</span>
-                <% } %>
-              </td>
-              <td class="px-6 py-4">
-                 <a href="/products/edit/<%= p.id %>"
-                   class="text-blue-600 hover:text-blue-800 mr-4">Edit</a>
-                 <form action="/products/delete/<%= p.id %>" method="post" class="inline">
-                  <button type="submit"
-                          onclick="return confirm('Delete this product?')"
-                          class="text-red-600 hover:text-red-800">
-                    Delete
-                  </button>
-                </form>
-              </td>
+    <% if (isAdmin) { %>
+      <section class="bg-white shadow rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-slate-900">Them san pham</h2>
+          <p class="text-sm text-slate-500">Anh se duoc luu tren S3</p>
+        </div>
+        <form action="/products/add" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="name" placeholder="Ten san pham" required class="border rounded-lg px-4 py-2">
+          <input name="price" type="number" step="0.01" placeholder="Gia" required class="border rounded-lg px-4 py-2">
+          <input name="quantity" type="number" placeholder="So luong" required class="border rounded-lg px-4 py-2">
+          <select name="categoryId" required class="border rounded-lg px-4 py-2">
+            <option value="" disabled selected>Chon danh muc</option>
+            <% (categories || []).forEach((category) => { %>
+              <option value="<%= category.categoryId %>"><%= category.name %></option>
+            <% }) %>
+          </select>
+          <input name="image" type="file" accept="image/*" class="border rounded-lg px-4 py-2 md:col-span-2">
+          <button class="bg-emerald-600 text-white py-3 rounded-xl font-semibold hover:bg-emerald-700 transition md:col-span-2">
+            Luu san pham
+          </button>
+        </form>
+      </section>
+    <% } %>
+
+    <section class="bg-white shadow rounded-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b">
+        <h2 class="text-xl font-semibold text-slate-900">Danh sach san pham</h2>
+        <p class="text-sm text-slate-500">Trang <%= pagination ? pagination.page : 1 %> / <%= pagination ? pagination.totalPages : 1 %></p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+          <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="px-6 py-3 text-left">Ten</th>
+              <th class="px-6 py-3 text-left">Danh muc</th>
+              <th class="px-6 py-3 text-left">Gia</th>
+              <th class="px-6 py-3 text-left">So luong</th>
+              <th class="px-6 py-3 text-left">Ton kho</th>
+              <th class="px-6 py-3 text-left">Anh</th>
+              <th class="px-6 py-3 text-left">Ngay tao</th>
+              <% if (isAdmin) { %>
+                <th class="px-6 py-3 text-left">Thao tac</th>
+              <% } %>
             </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <% if (products && products.length > 0) { %>
+              <% products.forEach((product) => { %>
+                <tr class="hover:bg-slate-50">
+                  <td class="px-6 py-4">
+                    <p class="font-semibold text-slate-900"><%= product.name %></p>
+                    <p class="text-xs text-slate-500">#<%= product.id %></p>
+                  </td>
+                  <td class="px-6 py-4 text-slate-700"><%= product.categoryName %></td>
+                  <td class="px-6 py-4 font-semibold text-slate-900">VND <%= Number(product.price).toLocaleString('vi-VN') %></td>
+                  <td class="px-6 py-4 text-slate-700"><%= product.quantity %></td>
+                  <td class="px-6 py-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold <%= product.status.badge %>">
+                      <%= product.status.label %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <% if (product.imageUrl) { %>
+                      <img src="<%= product.imageUrl %>" alt="Anh" class="h-16 w-16 object-cover rounded-lg border" />
+                    <% } else { %>
+                      <span class="text-slate-400 text-sm">Chua co</span>
+                    <% } %>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-500"><%= product.createdAt ? new Date(product.createdAt).toLocaleString('vi-VN') : '-' %></td>
+                  <% if (isAdmin) { %>
+                    <td class="px-6 py-4 flex flex-col gap-2 text-sm">
+                      <a href="/products/edit/<%= product.id %>" class="text-blue-600 hover:text-blue-800">Chinh sua</a>
+                      <form action="/products/delete/<%= product.id %>" method="post" onsubmit="return confirm('Soft delete san pham nay?')">
+                        <button type="submit" class="text-red-600 hover:text-red-800">Xoa mem</button>
+                      </form>
+                    </td>
+                  <% } %>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="<%= isAdmin ? 8 : 7 %>" class="px-6 py-10 text-center text-slate-500">
+                  Khong co san pham phu hop voi bo loc.
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <% const buildQuery = (nextPage) => {
+        const params = new URLSearchParams();
+        if (filters && filters.categoryId) params.set('categoryId', filters.categoryId);
+        if (filters && filters.searchTerm) params.set('search', filters.searchTerm);
+        if (filters && filters.minPrice !== undefined) params.set('minPrice', filters.minPrice);
+        if (filters && filters.maxPrice !== undefined) params.set('maxPrice', filters.maxPrice);
+        if (filters && filters.pageSize) params.set('pageSize', filters.pageSize);
+        params.set('page', nextPage);
+        return params.toString();
+      }; %>
+
+      <div class="flex items-center justify-between px-6 py-4 border-t bg-slate-50 text-sm text-slate-500">
+        <div>
+          Tong cong: <span class="font-semibold text-slate-900"><%= pagination ? pagination.totalItems : 0 %></span> san pham
+        </div>
+        <div class="flex gap-3">
+          <% if (pagination && pagination.hasPrev) { %>
+            <a class="px-3 py-2 rounded-lg border hover:bg-white" href="?<%= buildQuery((pagination.page || 1) - 1) %>"><- Trang truoc</a>
+          <% } else { %>
+            <span class="px-3 py-2 rounded-lg border border-dashed text-slate-300"><- Trang truoc</span>
+          <% } %>
+          <% if (pagination && pagination.hasNext) { %>
+            <a class="px-3 py-2 rounded-lg border hover:bg-white" href="?<%= buildQuery((pagination.page || 1) + 1) %>">Trang sau -></a>
+          <% } else { %>
+            <span class="px-3 py-2 rounded-lg border border-dashed text-slate-300">Trang sau -></span>
+          <% } %>
+        </div>
+      </div>
+    </section>
   </div>
 </body>
 </html>
