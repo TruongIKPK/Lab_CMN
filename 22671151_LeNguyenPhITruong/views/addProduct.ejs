@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Product</title>
+</head>
+<body>
+
+<h1>Add Product</h1>
+
+<form action="/products/add" method="POST" enctype="multipart/form-data">
+
+<p>
+Name:
+<input type="text" name="name" required>
+</p>
+
+<p>
+Price:
+<input type="number" name="price" required>
+</p>
+
+<p>
+Quantity:
+<input type="number" name="quantity" required>
+</p>
+
+<p>
+Image:
+<input type="file" name="image">
+</p>
+
+<button type="submit">Create</button>
+
+</form>
+
+<br>
+
+<a href="/products">Back</a>
+
+</body>
+</html>

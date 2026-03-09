@@ -6,6 +6,7 @@
     "start": "node app.js",
     "dev": "node app.js"
   },
+  
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.975.0",
     "@aws-sdk/client-s3": "^3.975.0",

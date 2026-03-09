@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product</title>
+</head>
+<body>
+
+<h1>Edit Product</h1>
+
+<form action="/products/edit/<%= product.ID %>" method="POST" enctype="multipart/form-data">
+
+<input type="hidden" name="oldImage" value="<%= product.image %>">
+
+<p>
+Name:
+<input type="text" name="name" value="<%= product.name %>" required>
+</p>
+
+<p>
+Price:
+<input type="number" name="price" value="<%= product.price %>" required>
+</p>
+
+<p>
+Quantity:
+<input type="number" name="quantity" value="<%= product.quantity %>" required>
+</p>
+
+<p>
+Current Image:
+<br>
+<% if(product.image){ %>
+<img src="<%= product.image %>" width="120">
+<% } %>
+</p>
+
+<p>
+Change Image:
+<input type="file" name="image">
+</p>
+
+<button type="submit">Update</button>
+
+</form>
+
+<br>
+
+<a href="/products">Back</a>
+
+</body>
+</html>
