@@ -80,7 +80,7 @@ exports.showEditForm = async (req, res) => {
         const product = await productModel.getProductById(id);
         res.render("editProduct", {product});
     }catch(err){
-        console.log(error);
+        console.log(err);
         res.send("Error loading product");
     }
 }
