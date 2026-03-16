@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <p class="kicker">Edit Product</p>
+            <h1 class="headline">
+                <%= title %>
+            </h1>
+            <div class="hero-actions">
+                <a class="btn btn-light" href="/">Quay lai danh sach</a>
+            </div>
+        </section>
+
+        <section class="grid">
+            <article class="card card-deep" style="grid-column: 1 / -1;">
+                <% if (errorMessage) { %>
+                    <p class="form-error">
+                        <%= errorMessage %>
+                    </p>
+                    <% } %>
+                        <form class="product-form" method="post" action="/products/<%= product.id %>/edit" enctype="multipart/form-data">
+                            <label for="id">ID</label>
+                            <input id="id" name="id" type="text" readonly value="<%= product.id %>" />
+
+                            <label for="name">Name</label>
+                            <input id="name" name="name" type="text" required value="<%= product.name || '' %>" />
+
+                            <label for="price">Price</label>
+                            <input id="price" name="price" type="number" min="0" required value="<%= product.price || '' %>" />
+
+                            <label for="unit_in_stock">Unit In Stock</label>
+                            <input id="unit_in_stock" name="unit_in_stock" type="number" min="0" required value="<%= product.unit_in_stock || '' %>" />
+
+                            <input name="url_image" type="hidden" value="<%= product.url_image || '' %>" />
+                            <label for="image">Image File moi (bo qua neu giu anh cu)</label>
+                            <input id="image" name="image" type="file" accept="image/*" />
+                            <% if (product.url_image) { %>
+                                <p>Anh hien tai:</p>
+                                <img src="<%= product.url_image %>" alt="Current product image" style="max-width:220px;border-radius:10px;border:1px solid #d9d9d9;" />
+                                <% } %>
+
+                                    <button class="btn btn-dark" type="submit">Cap nhat</button>
+                        </form>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

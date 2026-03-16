@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <p class="kicker">Products</p>
+            <h1 class="headline">
+                <%= title %>
+            </h1>
+        </section>
+
+        <section class="grid">
+            <article class="card card-deep" style="grid-column: 1 / -1;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <h2 style="margin-bottom:0;">Danh sach san pham (
+                        <%= products.length %>)</h2>
+                    <a class="btn btn-dark" href="/products/new">+ Them san pham</a>
+                </div>
+                <% if (!products.length) { %>
+                    <p>Chua co du lieu. Hay them san pham tai trang /products/new.</p>
+                    <% } else { %>
+                        <div style="overflow-x:auto;">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>In Stock</th>
+                                        <th>Image</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% products.forEach(function(product) { %>
+                                        <tr>
+                                            <td>
+                                                <%= product.id %>
+                                            </td>
+                                            <td>
+                                                <%= product.name %>
+                                            </td>
+                                            <td>
+                                                <%= product.price %>
+                                            </td>
+                                            <td>
+                                                <%= product.unit_in_stock %>
+                                            </td>
+                                            <td>
+                                                <% if (product.url_image) { %>
+                                                    <img src="<%= product.url_image %>" alt="<%= product.name %>" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #d9d9d9;" />
+                                                    <% } %>
+                                            </td>
+                                            <td>
+                                                <a href="/products/<%= product.id %>/edit" class="btn btn-primary">Edit</a>
+                                                <form action="/products/<%= product.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>

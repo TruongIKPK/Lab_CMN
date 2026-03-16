@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Error</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <p class="kicker">Error</p>
+            <h1 class="headline">
+                <%= message %>
+            </h1>
+            <% if (error && error.status) { %>
+                <p class="subtitle">Status:
+                    <%= error.status %>
+                </p>
+                <% } %>
+                    <% if (error && error.stack) { %>
+                        <pre class="code"><%= error.stack %></pre>
+                        <% } %>
+        </section>
+    </main>
+</body>
+
+</html>
