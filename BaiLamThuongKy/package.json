@@ -1,0 +1,28 @@
+{
+    "name": "bailamthuongky",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.1014.0",
+        "@aws-sdk/client-s3": "^3.1014.0",
+        "@aws-sdk/lib-dynamodb": "^3.1014.0",
+        "cookie-parser": "~1.4.4",
+        "debug": "~2.6.9",
+        "dotenv": "^17.3.1",
+        "ejs": "~2.6.1",
+        "express": "~4.16.1",
+        "http-errors": "~1.6.3",
+        "morgan": "~1.9.1",
+        "multer": "^2.1.1",
+        "uuid": "^13.0.0"
+    },
+    "description": "",
+    "main": "app.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
+}

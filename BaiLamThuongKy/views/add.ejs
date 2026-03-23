@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Them ve</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h1>Them ve moi</h1>
+
+    <form action="/tickets/add" method="post" enctype="multipart/form-data" class="ticket-form">
+        <label for="ticketId">Ma ve</label>
+        <input id="ticketId" name="ticketId" type="text" required />
+
+        <label for="eventName">Ten su kien</label>
+        <input id="eventName" name="eventName" type="text" required />
+
+        <label for="price">Gia</label>
+        <input id="price" name="price" type="number" min="1" required />
+
+        <label for="quantity">So luong</label>
+        <input id="quantity" name="quantity" type="number" min="0" required />
+
+        <label for="image">Anh ve</label>
+        <input id="image" name="image" type="file" accept="image/*" />
+
+        <div class="form-actions">
+            <button class="btn" type="submit">Luu</button>
+            <a class="btn btn-secondary" href="/tickets">Quay lai</a>
+        </div>
+    </form>
+</body>
+
+</html>

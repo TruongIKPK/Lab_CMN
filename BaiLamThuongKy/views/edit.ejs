@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sua ve</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h1>Sua ve</h1>
+
+    <form action="/tickets/<%= ticket.ticketId %>/edit" method="post" class="ticket-form">
+        <label for="ticketId">Ma ve</label>
+        <input id="ticketId" name="ticketId" type="text" value="<%= ticket.ticketId %>" readonly />
+
+        <label for="eventName">Ten su kien</label>
+        <input id="eventName" name="eventName" type="text" value="<%= ticket.eventName %>" required />
+
+        <label for="price">Gia</label>
+        <input id="price" name="price" type="number" min="1" value="<%= ticket.price %>" required />
+
+        <label for="quantity">So luong</label>
+        <input id="quantity" name="quantity" type="number" min="0" value="<%= ticket.quantity %>" required />
+
+        <div class="form-actions">
+            <button class="btn" type="submit">Cap nhat</button>
+            <a class="btn btn-secondary" href="/tickets">Quay lai</a>
+        </div>
+    </form>
+</body>
+
+</html>

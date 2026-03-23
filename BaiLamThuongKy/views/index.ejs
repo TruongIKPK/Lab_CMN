@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        On Thi Giua Ki
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h1>Danh sach ve</h1>
+
+    <p>
+        <a class="btn" href="/tickets/add">Them ve moi</a>
+    </p>
+
+    <% if (tickets && tickets.length > 0) { %>
+        <table class="ticket-table">
+            <thead>
+                <tr>
+                    <th>Ma ve</th>
+                    <th>Su kien</th>
+                    <th>Gia</th>
+                    <th>So luong</th>
+                    <th>Hanh dong</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tickets.forEach(function(ticket) { %>
+                    <tr>
+                        <td>
+                            <%= ticket.ticketId %>
+                        </td>
+                        <td>
+                            <%= ticket.eventName %>
+                        </td>
+                        <td>
+                            <%= ticket.price %>
+                        </td>
+                        <td>
+                            <%= ticket.quantity %>
+                        </td>
+                        <td class="actions">
+                            <a class="btn btn-secondary" href="/tickets/<%= ticket.ticketId %>/edit">Sua</a>
+                            <form action="/tickets/<%= ticket.ticketId %>/delete" method="post" class="inline-form">
+                                <button class="btn btn-danger" type="submit" onclick="return confirm('Ban chac chan muon xoa?')">Xoa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
+            <p>Chua co ve nao.</p>
+            <% } %>
+
+</body>
+
+</html>
